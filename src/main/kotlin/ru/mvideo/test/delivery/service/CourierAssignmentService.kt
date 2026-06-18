@@ -12,7 +12,7 @@ class CourierAssignmentService(
 
     fun findBestCourier(orderWeight: Double, zoneId: String): Courier? {
         return courierRepository.findAll()
-            .filter {it.isAvailable }
+            .filter { it.isAvailable }
             .filter { it.maxWeight >= orderWeight }
             .filter { it.rating >= 4.0 }
             .filter { routeOptimizationService.checkZoneAccess(it.id, zoneId) }
