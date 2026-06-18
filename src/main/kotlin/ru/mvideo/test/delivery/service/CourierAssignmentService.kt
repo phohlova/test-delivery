@@ -11,26 +11,11 @@ class CourierAssignmentService(
 ) {
 
     fun findBestCourier(orderWeight: Double, zoneId: String): Courier? {
-        val couriers = courierRepository.findAll().toList()
-        var bestCourier: Courier? = null
-        for (i in 0 until couriers.size) {
-            val courier = couriers[i]
-            if (courier.isAvailable) {
-                if (courier.maxWeight >= orderWeight) {
-                    if (courier.rating >= 4.0) {
-                        if (routeOptimizationService.checkZoneAccess(courier.id, zoneId)) {
-                            if (bestCourier == null) {
-                                bestCourier = courier
-                            } else {
-                                if (courier.rating > bestCourier.rating) {
-                                    bestCourier = courier
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return bestCourier
+        return courierRepository.findAll()
+            .filter {it.isAvailable }
+            .filter { it.maxWeight >= orderWeight }
+            .filter { it.rating >= 4.0 }
+            .filter { routeOptimizationService.checkZoneAccess(it.id, zoneId) }
+            .maxByOrNull { it.rating }
     }
 }
